@@ -1,14 +1,9 @@
 const { Router } = require('express');
-const userRouter = require('./user.routes');
-const articleRouter = require('./article.routes');
-const commentRouter = require('./comment.routes');
-const tagRouter = require('./tag.routes');
-const voteRouter = require('./vote.routes');
-const likeRouter = require('./like.routes');
-
-
-
 const router = Router();
+
+
+const postRouter = require('./post.routes');
+
 
 
 router.use((req, res, next) => {
@@ -17,12 +12,8 @@ router.use((req, res, next) => {
 });
 
 
-router.use('/users', userRouter);
-router.use('/articles', articleRouter);
-router.use('/comments', commentRouter);
-router.use('/tags', tagRouter);
-router.use('/votes', voteRouter);
-router.use('/likes', likeRouter);
+router.use('/posts', postRouter);
+
 
 
 module.exports = router;
