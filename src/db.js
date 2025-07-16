@@ -43,41 +43,26 @@ fs.readdirSync(path.join(__dirname, '/models'))
 modelDefiners.forEach(model => model(sequelize));
 // Itera sobre todos los modelos cargados y los define en la instancia de sequelize
 
-const { User, Article, Comment, Like, Vote, Tag } = sequelize.models;
+const { User, Post, Rating, Tag, Media } = sequelize.models;
 // Extrae los modelos definidos dentro de Sequelize
 
 // Relacionar los modelos en la base de datos
-User.belongsToMany(Article, {through:'user_article' });
-Article.belongsTo(User, {through:'user_article' });
-// Un usuario puede tener muchos artículos y un artículo pertenece a un usuario
+User.hasMany(Post, { foreignKey: 'authorId' });
+Post.belongsTo(User, { foreignKey: 'authorId' });
 
-Article.belongsToMany(Comment, {through:'article_comment' });
-Comment.belongsTo(Article, {through:'article_comment' });
-// Un artículo puede tener muchos comentarios y un comentario pertenece a un artículo
+Post.hasMany(Media, { foreignKey: 'postId' });
+Media.belongsTo(Post, { foreignKey: 'postId' });
 
-User.belongsToMany(Comment, {through:'user_comment' });
-Comment.belongsTo(User, {through:'user_comment' });
-// Un usuario puede tener muchos comentarios y un comentario pertenece a un usuario
+User.hasMany(Rating, { foreignKey: 'userId' });
+Post.hasMany(Rating, { foreignKey: 'postId' });
+Rating.belongsTo(User, { foreignKey: 'userId' });
+Rating.belongsTo(Post, { foreignKey: 'postId' });
 
-Article.belongsToMany(Like, {through:'article_like' });
-Like.belongsTo(Article, {through:'article_like' });
-// Un artículo puede tener muchos "likes" y un "like" pertenece a un artículo
+// Relación N:M entre Post y Tag
+Post.belongsToMany(Tag, { through: 'PostTag', timestamps: false });
+Tag.belongsToMany(Post, { through: 'PostTag', timestamps: false });
 
-User.belongsToMany(Like, {through:'user_like' });
-Like.belongsTo(User, {through:'user_like' });
-// Un usuario puede dar muchos "likes" y un "like" pertenece a un usuario
 
-Article.belongsToMany(Vote, {through:'article_vote' });
-Vote.belongsTo(Article, {through:'article_vote' });
-// Un artículo puede tener muchos "votos" y un voto pertenece a un artículo
-
-User.belongsToMany(Vote, {through:'user_vote' });
-Vote.belongsTo(User, {through:'user_vote' });
-// Un usuario puede dar muchos votos y un voto pertenece a un usuario
-
-Tag.belongsToMany(Article, {through: 'article_tag'});
-Article.belongsToMany(Tag, {through: 'article_tag'});
-// Un articulo puede tener mucbelongsTo tag y una tag pertenece a muchos artículos
 
 module.exports = {
   ...sequelize.models, // Exporta todos los modelos creados en Sequelize

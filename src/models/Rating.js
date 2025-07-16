@@ -1,16 +1,19 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  sequelize.define('Tag', {
-    tag_id: {
+  sequelize.define('Rating', {
+    rating_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
+    valueUp: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    valueDown: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   }, {
     timestamps: false,
