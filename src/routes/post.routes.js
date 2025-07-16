@@ -1,11 +1,11 @@
 const { Router } = require('express');
 const postRouter = Router();
 
-const getAllPosts = require('../handlers/handlerPost/handlerGetAllPost');
-const createPost = require('../handlers/handlerPost/handlerCreatePost');
-const updatePost = require('../handlers/handlerPost/handlerUpdatePost');
-const deletePost = require('../handlers/handlerPost/handlerDeletePost');
-const votePost = require('../handlers/handlerPost/handlerVotePost')
+const getAllPosts = require('../handlers/post/handlerGetAllPost');
+const createPost = require('../handlers/post/handlerCreatePost');
+const updatePost = require('../handlers/post/handlerUpdatePost');
+const deletePost = require('../handlers/post/handlerDeletePost');
+const votePost = require('../handlers/post/handlerVotePost')
 
 
 
