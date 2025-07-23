@@ -2,7 +2,7 @@ const getAllTags = require('../../controllers/tag/getAllTags');
 
 module.exports = async (req, res) => {
   try {
-    // recupera tags
+    // recupera todas las tags
     const tags = await getAllTags();
     res.status(200).json(tags);
   } catch (error) {
