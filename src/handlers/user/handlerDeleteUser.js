@@ -1,4 +1,4 @@
-const deleteUserPermanent = require('../../controllers/user/deleteUserPermanent');
+const deleteUserPermanent = require('../../controllers/user/deleteUser');
 
 module.exports = async (req, res) => {
   try {

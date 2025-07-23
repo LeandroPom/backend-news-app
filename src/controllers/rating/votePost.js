@@ -1,6 +1,7 @@
 const { Rating } = require('../../db');
 
 module.exports = async (userId, postId, { valueUp, valueDown }) => {
+  
   if (valueUp && valueDown) {
     throw new Error("No se puede votar positivo y negativo al mismo tiempo.");
   }

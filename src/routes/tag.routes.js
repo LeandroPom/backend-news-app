@@ -1,6 +1,6 @@
 const { Router } = require('express');
-const handlerGetAllTags = require('../handlers/tags/handlerGetAllTags');
-const handlerCreateTag = require('../handlers/tags/handlerCreateTag');
+const handlerGetAllTags = require('../handlers/tag/handlerGetAllTags');
+const handlerCreateTag = require('../handlers/tag/handlerCreateTag');
 
 const tagRouter = Router();
 
