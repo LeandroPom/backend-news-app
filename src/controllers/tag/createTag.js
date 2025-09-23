@@ -1,11 +1,27 @@
-const { Tag } = require('../../db');
+const { Tag } = require('../../db'); 
 
-module.exports = async (name) => {
-  if (!name) throw new Error("El nombre del tag es obligatorio");
+module.exports = async (req, res) => {
+  try {
+    const { tag_name } = req.body;
 
-  const [tag, created] = await Tag.findOrCreate({ where: { name } });
+    if (!tag_name) {
+      return res.status(400).json({ error: 'El nombre de la tag es obligatorio' });
+    }
 
-  if (!created) throw new Error("El tag ya existe");
+    // Evitar duplicados
+    const existingTag = await Tag.findOne({ where: { tag_name } });
+    if (existingTag) {
+      return res.status(400).json({ error: 'La tag ya existe' });
+    }
 
-  return tag;
+    const newTag = await Tag.create({ tag_name });
+
+    return res.status(201).json({
+      message: 'Tag creada con éxito',
+      tag: newTag
+    });
+  } catch (error) {
+    console.error('❌ Error en createTag:', error);
+    return res.status(500).json({ error: 'Error en el servidor' });
+  }
 };

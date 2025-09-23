@@ -1,10 +1,10 @@
 const { Router } = require('express');
-const handlerGetAllTags = require('../handlers/tag/handlerGetAllTags');
-const handlerCreateTag = require('../handlers/tag/handlerCreateTag');
+const CreateTag = require('../controllers/tag/createTag');
+const GetAllTags = require('../controllers/tag/getAllTags');
 
 const tagRouter = Router();
 
-tagRouter.get('/', handlerGetAllTags);
-tagRouter.post('/', handlerCreateTag);
+tagRouter.post('/', CreateTag);
+tagRouter.get('/', GetAllTags);
 
 module.exports = tagRouter;

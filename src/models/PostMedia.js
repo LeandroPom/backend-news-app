@@ -1,19 +1,19 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  sequelize.define('Rating', {
-    rating_id: {
+  sequelize.define('PostMedia', {
+    media_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    valueUp: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
+    url: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
-    valueDown: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
+    type: {
+      type: DataTypes.ENUM('image', 'video'),
+      allowNull: false
     }
   }, {
     timestamps: false,

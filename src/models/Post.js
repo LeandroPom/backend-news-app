@@ -7,12 +7,12 @@ module.exports = (sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
-    headline: {
+    headLine: {
       type: DataTypes.STRING,
       allowNull: false
     },
     lead: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       allowNull: false
     },
     body: {
@@ -25,7 +25,14 @@ module.exports = (sequelize) => {
     },
     views: {
       type: DataTypes.INTEGER,
-      allowNull: false, 
+      defaultValue: 0
+    },
+    rating_positive: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    rating_negative: {
+      type: DataTypes.INTEGER,
       defaultValue: 0
     }
   }, {

@@ -1,4 +1,4 @@
-require("dotenv").config(); 
+require("dotenv").config();
 const fs = require('fs');
 const path = require('path');
 const { DB_HOST, DB_NAME, DB_PASSWORD, DB_USER, NODE_ENV } = process.env;
@@ -7,24 +7,24 @@ const { Sequelize } = require("sequelize");
 // Configuración para desarrollo y producción
 const sequelize = NODE_ENV === "production"
   ? new Sequelize({
-      database: DB_NAME,
-      username: DB_USER,
-      password: DB_PASSWORD,
-      host: DB_HOST,
-      dialect: "postgres",
-      dialectOptions: {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false,
-        },
+    database: DB_NAME,
+    username: DB_USER,
+    password: DB_PASSWORD,
+    host: DB_HOST,
+    dialect: "postgres",
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
       },
-      logging: false,
-      native: false,
-    })
+    },
+    logging: false,
+    native: false,
+  })
   : new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`, {
-      logging: false,
-      native: false,
-    });
+    logging: false,
+    native: false,
+  });
 // Configura la conexión a la base de datos con Sequelize. Si el entorno es "producción", se configuran opciones adicionales para la conexión segura (SSL). En desarrollo, la conexión es más simple.
 
 const basename = path.basename(__filename);
@@ -43,24 +43,19 @@ fs.readdirSync(path.join(__dirname, '/models'))
 modelDefiners.forEach(model => model(sequelize));
 // Itera sobre todos los modelos cargados y los define en la instancia de sequelize
 
-const { User, Post, Rating, Tag, Media } = sequelize.models;
-// Extrae los modelos definidos dentro de Sequelize
+const { User, Post, Tag, PostMedia } = sequelize.models;
 
-// Relacionar los modelos en la base de datos
-User.hasMany(Post, { foreignKey: 'authorId' });
-Post.belongsTo(User, { foreignKey: 'authorId' });
+// User - Post (1:N)
+User.hasMany(Post, { foreignKey: 'user_id' });
+Post.belongsTo(User, { foreignKey: 'user_id' });
 
-Post.hasMany(Media, { foreignKey: 'postId' });
-Media.belongsTo(Post, { foreignKey: 'postId' });
+// Post - Tag (N:M)
+Post.belongsToMany(Tag, { through: 'PostTag', foreignKey: 'post_id' });
+Tag.belongsToMany(Post, { through: 'PostTag', foreignKey: 'tag_id' });
 
-User.hasMany(Rating, { foreignKey: 'userId' });
-Post.hasMany(Rating, { foreignKey: 'postId' });
-Rating.belongsTo(User, { foreignKey: 'userId' });
-Rating.belongsTo(Post, { foreignKey: 'postId' });
-
-// Relación N:M entre Post y Tag
-Post.belongsToMany(Tag, { through: 'PostTag', timestamps: false });
-Tag.belongsToMany(Post, { through: 'PostTag', timestamps: false });
+// Post - PostMedia (1:N)
+Post.hasMany(PostMedia, { foreignKey: 'post_id' });
+PostMedia.belongsTo(Post, { foreignKey: 'post_id' });
 
 
 

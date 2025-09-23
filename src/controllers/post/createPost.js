@@ -1,30 +1,44 @@
-const { Post, Tag, Media } = require('../../db');
+const { Post, Tag, PostMedia } = require('../../db');
 
-module.exports = async (data, userId) => {
-  const { headline, lead, body, conclusion, tags, media } = data;
+module.exports = async (req, res) => {
+  try {
+    const { headLine, lead, body, conclusion, tags, media, user_id } = req.body;
 
-  const newPost = await Post.create({
-    headline,
-    lead,
-    body,
-    conclusion,
-    authorId: userId
-  });
+    if (!headLine || !lead || !body || !user_id) {
+      return res.status(400).json({ error: 'Faltan datos obligatorios' });
+    }
 
-  // Asignar Tags
-  if (Array.isArray(tags) && tags.length) {
-    const foundTags = await Tag.findAll({ where: { name: tags } });
-    await newPost.addTags(foundTags);
+    // Crear post
+    const newPost = await Post.create({
+      headLine,
+      lead,
+      body,
+      conclusion,
+      user_id
+    });
+
+    // Asociar Tags (si se mandan)
+    if (tags && tags.length > 0) {
+      const tagInstances = await Tag.findAll({ where: { tag_id: tags } });
+      await newPost.addTags(tagInstances);
+    }
+
+    // Asociar Media (si se manda)
+    if (media && media.length > 0) {
+      const mediaInstances = media.map(m => ({
+        url: m.url,
+        type: m.type,
+        post_id: newPost.post_id
+      }));
+      await PostMedia.bulkCreate(mediaInstances);
+    }
+
+    return res.status(201).json({
+      message: 'Post creado con éxito',
+      post: newPost
+    });
+  } catch (error) {
+    console.error('❌ Error en createPost:', error);
+    return res.status(500).json({ error: 'Error en el servidor' });
   }
-
-  // Agregar Media
-  if (Array.isArray(media) && media.length) {
-    const formattedMedia = media.map(m => ({
-      ...m,
-      postId: newPost.post_id
-    }));
-    await Media.bulkCreate(formattedMedia);
-  }
-
-  return newPost;
 };

@@ -5,35 +5,46 @@ module.exports = (sequelize) => {
     user_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      allowNull: false,
       autoIncrement: true
     },
-    name: {
+    user_name: {
       type: DataTypes.STRING,
-      allowNull: false,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
+      allowNull: false
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false
     },
-
-    role: {
-      type: DataTypes.ENUM('user', 'editor', 'admin'),
+    mail: {
+      type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'user'
+      unique: true,
+      validate: {
+        isEmail: true
+      }
     },
-    block: {
+    active: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      defaultValue: true
+    },
+    admin: {
+      type: DataTypes.BOOLEAN,
       defaultValue: false
+    },
+    editor: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    premium: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    profilePic: {
+      type: DataTypes.STRING,
+      allowNull: true // URL de la imagen
     }
   }, {
-    timestamps: false,
+    timestamps: true,
     freezeTableName: true,
   });
 };
