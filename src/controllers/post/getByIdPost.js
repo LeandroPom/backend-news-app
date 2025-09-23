@@ -1,9 +1,21 @@
 // controllers/post/getByIdPost.js
-const { Post } = require("../../db");
+const { Post, Tag, PostMedia } = require("../../db");
 
 module.exports = async (id) => {
   try {
-    const post = await Post.findByPk(id);
+    const post = await Post.findByPk(id, {
+      include: [
+        {
+          model: Tag,
+          attributes: ["tag_id", "tag_name"],
+          through: { attributes: [] }
+        },
+        {
+          model: PostMedia,
+          attributes: ["media_id", "url", "type"]
+        }
+      ]
+    });
 
     if (!post) {
       throw new Error("Post no encontrado");

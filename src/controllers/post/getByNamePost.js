@@ -1,5 +1,5 @@
 // controllers/post/getByNamePost.js
-const { Post } = require("../../db");
+const { Post, Tag, PostMedia } = require("../../db");
 const { Op } = require("sequelize");
 
 module.exports = async (name) => {
@@ -7,9 +7,20 @@ module.exports = async (name) => {
     const posts = await Post.findAll({
       where: {
         headLine: {
-          [Op.iLike]: `%${name}%` // busca sin importar mayúsculas/minúsculas
+          [Op.iLike]: `%${name}%` // búsqueda case-insensitive
         }
-      }
+      },
+      include: [
+        {
+          model: Tag,
+          attributes: ["tag_id", "tag_name"], // ajusta los campos que quieras devolver
+          through: { attributes: [] } // oculta la tabla intermedia
+        },
+        {
+          model: PostMedia,
+          attributes: ["media_id", "url", "type"]
+        }
+      ]
     });
 
     if (!posts.length) {
