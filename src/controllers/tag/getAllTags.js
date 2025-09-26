@@ -1,14 +1,15 @@
-const { Tag } = require('../../db'); 
+// controllers/tag/getAllTags.js
+const { Tag } = require("../../db");
 
-module.exports = async (req, res) => {
+module.exports = async () => {
   try {
     const tags = await Tag.findAll({
-      attributes: ['tag_id', 'tag_name']
+      attributes: ["tag_id", "tag_name"],
     });
 
-    return res.status(200).json(tags);
+    return tags;
+    
   } catch (error) {
-    console.error('❌ Error en getAllTags:', error);
-    return res.status(500).json({ error: 'Error en el servidor' });
+    throw new Error(`Error en getAllTags: ${error.message}`);
   }
 };

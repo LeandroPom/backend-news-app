@@ -1,24 +1,24 @@
-const { User } = require('../../db'); // ajusta el path según tu proyecto
+// controllers/user/getAllUsers.js
+const { User } = require("../../db");
 
-module.exports = async (req, res) => {
+module.exports = async () => {
   try {
     const users = await User.findAll({
       attributes: [
-        'user_id',
-        'user_name',
-        'mail',       // ✅ Si quieres ocultar el mail, elimina esta línea
-        'active',
-        'admin',
-        'editor',
-        'premium',
-        'profilePic',
-        'createdAt'
+        "user_id",
+        "user_name",
+        "mail",       // ❌ Si no quieres mostrarlo, elimina esta línea
+        "active",
+        "admin",
+        "editor",
+        "premium",
+        "profilePic",
+        "createdAt"
       ]
     });
 
-    return res.status(200).json(users);
+    return users;
   } catch (error) {
-    console.error('❌ Error en getAllUsers:', error);
-    return res.status(500).json({ error: 'Error en el servidor' });
+    throw new Error(`Error en getAllUsers: ${error.message}`);
   }
 };

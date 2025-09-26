@@ -1,7 +1,7 @@
 const { Router } = require('express');
 
-const createPost = require('../controllers/post/createPost');
-const getAllPosts = require('../controllers/post/getAllPost');
+const createPost = require('../handlers/post/createPost');
+const getAllPosts = require('../handlers/post/getAllPost');
 const getByIdPost = require('../handlers/post/handlerGetByIdPost');
 const getByNamePost = require('../handlers/post/handlerGetByNamePost');
 

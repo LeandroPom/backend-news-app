@@ -43,19 +43,57 @@ fs.readdirSync(path.join(__dirname, '/models'))
 modelDefiners.forEach(model => model(sequelize));
 // Itera sobre todos los modelos cargados y los define en la instancia de sequelize
 
-const { User, Post, Tag, PostMedia } = sequelize.models;
+const { User, Post, Tag, PostMedia, PostVote, PostView } = sequelize.models;
 
-// User - Post (1:N)
-User.hasMany(Post, { foreignKey: 'user_id' });
-Post.belongsTo(User, { foreignKey: 'user_id' });
+/* =========================================================
+   RELACIONES PRINCIPALES
+   ========================================================= */
 
-// Post - Tag (N:M)
-Post.belongsToMany(Tag, { through: 'PostTag', foreignKey: 'post_id' });
-Tag.belongsToMany(Post, { through: 'PostTag', foreignKey: 'tag_id' });
+/* ------------------- USER ↔ POST -------------------
+   Un usuario puede crear muchos posts (1:N)
+   Cada post pertenece a un único usuario
+------------------------------------------------------- */
+User.hasMany(Post, { foreignKey: "user_id" });
+Post.belongsTo(User, { foreignKey: "user_id" });
 
-// Post - PostMedia (1:N)
-Post.hasMany(PostMedia, { foreignKey: 'post_id' });
-PostMedia.belongsTo(Post, { foreignKey: 'post_id' });
+/* ------------------- POST ↔ TAG --------------------
+   Relación N:M entre posts y tags
+   A través de la tabla intermedia 'PostTag'
+------------------------------------------------------- */
+Post.belongsToMany(Tag, { through: "PostTag", foreignKey: "post_id" });
+Tag.belongsToMany(Post, { through: "PostTag", foreignKey: "tag_id" });
+
+/* ------------------- POST ↔ POSTMEDIA ----------------
+   Un post puede tener muchas media (1:N)
+   Cada media pertenece a un único post
+------------------------------------------------------- */
+Post.hasMany(PostMedia, { foreignKey: "post_id" });
+PostMedia.belongsTo(Post, { foreignKey: "post_id" });
+
+/* ------------------- USER ↔ POSTVOTE -----------------
+   Relación N:M para votos
+   Un usuario puede votar muchos posts
+   Un post puede tener muchos votos de usuarios
+   Además se puede acceder a los votos de un post con 'Votes'
+------------------------------------------------------- */
+User.belongsToMany(Post, { through: PostVote, foreignKey: "user_id" });
+Post.belongsToMany(User, { through: PostVote, foreignKey: "post_id" });
+
+// Acceso directo a los votos de un post
+Post.hasMany(PostVote, { foreignKey: "post_id", as: "Votes" });
+PostVote.belongsTo(Post, { foreignKey: "post_id" });
+
+/* ------------------- POST ↔ POSTVIEW -----------------
+   Relación 1:N para controlar vistas
+   Un post puede tener muchas vistas
+   Una vista pertenece a un único post
+   Un usuario puede tener muchas vistas (1:N)
+------------------------------------------------------- */
+Post.hasMany(PostView, { foreignKey: "post_id" });
+PostView.belongsTo(Post, { foreignKey: "post_id" });
+
+User.hasMany(PostView, { foreignKey: "user_id" });
+PostView.belongsTo(User, { foreignKey: "user_id" });
 
 
 

@@ -1,29 +1,52 @@
-const { Post, Tag, PostMedia, User } = require('../../db'); // ajusta la ruta
+// controllers/post/getAllPosts.js
+const { Post, Tag, PostMedia, User } = require("../../db");
+const { Sequelize } = require("sequelize");
 
-module.exports = async (req, res) => {
+module.exports = async () => {
   try {
     const posts = await Post.findAll({
       include: [
         {
           model: User,
-          attributes: ['user_id', 'user_name', 'mail'] // ocultamos password
+          attributes: ["user_id", "user_name", "mail"], // ocultamos password
         },
         {
           model: Tag,
-          attributes: ['tag_id', 'tag_name'],
-          through: { attributes: [] } // oculta tabla intermedia
+          attributes: ["tag_id", "tag_name"],
+          through: { attributes: [] },
         },
         {
           model: PostMedia,
-          attributes: ['media_id', 'url', 'type']
-        }
+          attributes: ["media_id", "url", "type"],
+        },
       ],
-      order: [['createdAt', 'DESC']]
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(`(
+              SELECT COUNT(*)
+              FROM "Votes" AS v
+              WHERE v."post_id" = "Post"."post_id"
+              AND v."vote_type" = 'positive'
+            )`),
+            "rating_positive",
+          ],
+          [
+            Sequelize.literal(`(
+              SELECT COUNT(*)
+              FROM "Votes" AS v
+              WHERE v."post_id" = "Post"."post_id"
+              AND v."vote_type" = 'negative'
+            )`),
+            "rating_negative",
+          ],
+        ],
+      },
+      order: [["createdAt", "DESC"]],
     });
 
-    return res.status(200).json(posts);
+    return posts;
   } catch (error) {
-    console.error('❌ Error en getAllPosts:', error);
-    return res.status(500).json({ error: 'Error en el servidor' });
+    throw new Error(`Error en getAllPosts: ${error.message}`);
   }
 };
