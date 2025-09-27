@@ -1,6 +1,6 @@
 // controllers/post/getByNamePost.js
 const { Post, Tag, PostMedia } = require("../../db");
-const { Sequelize, Op } = require("sequelize");
+const { Op } = require("sequelize");
 
 module.exports = async (name) => {
   try {
@@ -20,29 +20,11 @@ module.exports = async (name) => {
           model: PostMedia,
           attributes: ["media_id", "url", "type"],
         },
+        {
+          association: "Votes",
+          attributes: ["vote_type"],
+        },
       ],
-      attributes: {
-        include: [
-          [
-            Sequelize.literal(`(
-              SELECT COUNT(*)
-              FROM "Votes" AS v
-              WHERE v."post_id" = "Post"."post_id"
-              AND v."vote_type" = 'positive'
-            )`),
-            "rating_positive",
-          ],
-          [
-            Sequelize.literal(`(
-              SELECT COUNT(*)
-              FROM "Votes" AS v
-              WHERE v."post_id" = "Post"."post_id"
-              AND v."vote_type" = 'negative'
-            )`),
-            "rating_negative",
-          ],
-        ],
-      },
     });
 
     if (!posts.length) {

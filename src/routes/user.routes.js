@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const getAllUsers = require('../handlers/user/getAllUsers');
+const getAllUsers = require('../handlers/user/getAllUsersHandler');
 const getByIdUser = require('../handlers/user/handlerGetByIdUser');
 const getByNameUser = require('../handlers/user/handlerGetByNameUser');
 

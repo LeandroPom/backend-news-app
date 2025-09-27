@@ -1,9 +1,9 @@
 const { Router } = require('express');
-// const handlerVotePost = require('../handlers/rating/handlerVotePost');
+const votePost = require('../handlers/rating/votePostHandler');
 
 
 const ratingRouter = Router();
 
-// ratingRouter.post('/:postId', handlerVotePost);
+ratingRouter.post('/vote', votePost);
 
 module.exports = ratingRouter;

@@ -1,5 +1,5 @@
 // handlers/post/votePostHandler.js
-const votePost = require("../../controllers/post/votePost");
+const votePost = require("../../controllers/rating/votePost");
 
 module.exports = async (req, res) => {
   try {

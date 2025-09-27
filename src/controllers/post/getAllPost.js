@@ -1,6 +1,5 @@
 // controllers/post/getAllPosts.js
 const { Post, Tag, PostMedia, User } = require("../../db");
-const { Sequelize } = require("sequelize");
 
 module.exports = async () => {
   try {
@@ -19,29 +18,11 @@ module.exports = async () => {
           model: PostMedia,
           attributes: ["media_id", "url", "type"],
         },
+        {
+          association: "Votes", // Incluimos votos para habilitar los virtuales
+          attributes: ["vote_type"],
+        },
       ],
-      attributes: {
-        include: [
-          [
-            Sequelize.literal(`(
-              SELECT COUNT(*)
-              FROM "Votes" AS v
-              WHERE v."post_id" = "Post"."post_id"
-              AND v."vote_type" = 'positive'
-            )`),
-            "rating_positive",
-          ],
-          [
-            Sequelize.literal(`(
-              SELECT COUNT(*)
-              FROM "Votes" AS v
-              WHERE v."post_id" = "Post"."post_id"
-              AND v."vote_type" = 'negative'
-            )`),
-            "rating_negative",
-          ],
-        ],
-      },
       order: [["createdAt", "DESC"]],
     });
 

@@ -1,5 +1,5 @@
 // handlers/post/getAllPostsHandler.js
-const getAllPosts = require("../../controllers/post/getAllPosts");
+const getAllPosts = require("../../controllers/post/getAllPost");
 
 module.exports = async (req, res) => {
   try {
