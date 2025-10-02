@@ -49,6 +49,13 @@ module.exports = (sequelize) => {
           return 0;
         },
       },
+      
+      // ✅ Agregar dentro del modelo Post.js
+      active: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+      },
+
     },
     {
       timestamps: true,
