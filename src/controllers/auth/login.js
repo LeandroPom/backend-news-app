@@ -28,6 +28,7 @@ module.exports = async (req, res) => {
         user_id: user.user_id,
         user_name: user.user_name,
         mail: user.mail,
+        active: user.active,
         roles: {
           admin: user.admin,
           editor: user.editor,
