@@ -43,7 +43,7 @@ fs.readdirSync(path.join(__dirname, '/models'))
 modelDefiners.forEach(model => model(sequelize));
 // Itera sobre todos los modelos cargados y los define en la instancia de sequelize
 
-const { User, Post, Tag, PostMedia, PostVote, PostView } = sequelize.models;
+const { User, Post, Tag, PostMedia, PostVote, PostView, Banner } = sequelize.models;
 
 /* =========================================================
    RELACIONES PRINCIPALES
