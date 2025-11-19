@@ -1,5 +1,5 @@
-// handlers/post/incrementViewHandler.js
-const incrementView = require("../../controllers/post/incrementView");
+// handlers/post/addViewHandler.js
+const addView = require("../../controllers/rating/addView");
 
 module.exports = async (req, res) => {
   try {
@@ -9,12 +9,13 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: "Faltan datos obligatorios" });
     }
 
-    const post = await incrementView(post_id, user_id);
+    const post = await addView(post_id, user_id);
     
     return res.status(200).json(post);
 
   } catch (error) {
-    console.error("❌ Error en incrementViewHandler:", error);
+    
+    console.error("❌ Error en addViewHandler:", error);
     return res.status(500).json({ error: "Error en el servidor" });
   }
 };
