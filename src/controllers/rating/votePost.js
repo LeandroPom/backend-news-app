@@ -1,4 +1,4 @@
-// controllers/post/votePost.js
+// controllers/rating/votePost.js
 const { Post, PostVote } = require("../../db");
 
 module.exports = async ({ post_id, user_id, vote_type }) => {

@@ -1,4 +1,4 @@
-// handlers/post/addViewHandler.js
+// handlers/rating/addViewHandler.js
 const addView = require("../../controllers/rating/addView");
 
 module.exports = async (req, res) => {

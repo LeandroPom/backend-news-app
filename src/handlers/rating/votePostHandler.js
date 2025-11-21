@@ -1,4 +1,4 @@
-// handlers/post/votePostHandler.js
+// handlers/rating/votePostHandler.js
 const votePost = require("../../controllers/rating/votePost");
 
 module.exports = async (req, res) => {
