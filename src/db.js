@@ -43,7 +43,7 @@ fs.readdirSync(path.join(__dirname, '/models'))
 modelDefiners.forEach(model => model(sequelize));
 // Itera sobre todos los modelos cargados y los define en la instancia de sequelize
 
-const { User, Post, Tag, PostMedia, PostVote, PostView, Banner, Favorite } = sequelize.models;
+const { User, Post, Tag, PostMedia, PostVote, PostView, Banner, Premium, Favorite } = sequelize.models;
 
 /* =========================================================
    RELACIONES PRINCIPALES
@@ -114,6 +114,22 @@ User.hasMany(Favorite, { foreignKey: "user_id", as: "Favorites" });
 // Un Post tiene muchos favoritos (registros en la tabla Favorite)
 Post.hasMany(Favorite, { foreignKey: "post_id", as: "Favorites" });
 
+/* =========================================================
+   RELACIÓN USER ↔ PREMIUM (1:1)
+   ========================================================= */
+
+// Un usuario puede tener un único Premium
+User.hasOne(Premium, { 
+    foreignKey: "user_id",
+    as: "PremiumData",
+    onDelete: "CASCADE",
+});
+
+// Un premium pertenece a un solo usuario
+Premium.belongsTo(User, { 
+    foreignKey: "user_id",
+    as: "User",
+});
 
 module.exports = {
   ...sequelize.models, // Exporta todos los modelos creados en Sequelize
