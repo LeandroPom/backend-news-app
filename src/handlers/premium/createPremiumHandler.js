@@ -1,18 +1,17 @@
-// handlers/post/createPremiumHandler.js
+// handlers/premium/createPremiumHandler.js
 const createPremium = require("../../controllers/premium/createPremium");
 
 module.exports = async (req, res) => {
   try {
-    const { user_id } = req.body;
+    const { user_id, days } = req.body;
 
-    const premium = await createPremium({ user_id });
+    const premium = await createPremium({ user_id, days });
 
-    return res.status(201).json({
+    res.status(201).json({
       message: "Premium creado correctamente",
       premium,
     });
-  } catch (err) {
-    console.error("❌ Error en createPremiumHandler:", err);
-    return res.status(400).json({ error: err.message });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };

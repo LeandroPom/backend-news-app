@@ -1,4 +1,4 @@
-// handlers/get/getPremiumHandler.js
+// handlers/premium/getPremiumHandler.js
 const getPremium = require("../../controllers/premium/getPremium");
 
 module.exports = async (req, res) => {
@@ -7,9 +7,8 @@ module.exports = async (req, res) => {
 
     const premium = await getPremium({ user_id, premium_id });
 
-    return res.status(200).json(premium);
-  } catch (err) {
-    console.error("❌ Error en getPremiumHandler:", err);
-    return res.status(400).json({ error: err.message });
+    res.status(200).json(premium);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };

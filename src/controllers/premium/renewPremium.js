@@ -1,19 +1,37 @@
 // controllers/premium/renewPremium.js
-const { Premium } = require("../../db");
+const { Premium, User } = require("../../db");
 
-module.exports = async ({ user_id, premium_id }) => {
-  if (!user_id && !premium_id)
-    throw new Error("Debe proporcionar user_id o premium_id");
+module.exports = async ({ user_id, days }) => {
+  if (!user_id || !days) {
+    throw new Error("Faltan datos obligatorios: user_id o days");
+  }
 
-  const where = {};
-  if (user_id) where.user_id = user_id;
-  if (premium_id) where.premium_id = premium_id;
+  // 1️⃣ Buscar usuario
+  const user = await User.findByPk(user_id);
+  if (!user) throw new Error("El usuario no existe");
 
-  const premium = await Premium.findOne({ where });
+  // 2️⃣ Buscar premium asociado
+  const premium = await Premium.findOne({ where: { user_id } });
+  if (!premium) throw new Error("El usuario no posee Premium");
 
-  if (!premium) throw new Error("Premium no encontrado");
+  const now = new Date();
+  const expiration = new Date(premium.expiration_date);
 
-  premium.pay_date = new Date();
+  let newExpiration;
+
+  // 3️⃣ Comparación de fechas
+  if (expiration < now) {
+    // Premium vencido → desde hoy
+    newExpiration = new Date();
+    newExpiration.setDate(newExpiration.getDate() + Number(days));
+  } else {
+    // Premium activo → extender desde expiración actual
+    newExpiration = new Date(expiration);
+    newExpiration.setDate(newExpiration.getDate() + Number(days));
+  }
+
+  // 4️⃣ Actualizar
+  premium.expiration_date = newExpiration;
   await premium.save();
 
   return premium;

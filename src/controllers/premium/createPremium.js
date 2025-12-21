@@ -1,20 +1,28 @@
 // controllers/premium/createPremium.js
 const { Premium, User } = require("../../db");
+const dateUtils = require("../utils/dateUtils");
 
-module.exports = async ({ user_id }) => {
-  if (!user_id) throw new Error("Falta el user_id");
+module.exports = async ({ user_id, days }) => {
+  if (!user_id || !days) {
+    throw new Error("Faltan datos obligatorios: user_id o days");
+  }
 
   const user = await User.findByPk(user_id);
   if (!user) throw new Error("Usuario no encontrado");
 
-  // Verificar si ya existe
   const existing = await Premium.findOne({ where: { user_id } });
   if (existing) throw new Error("El usuario ya tiene Premium");
 
-  const newPremium = await Premium.create({
+  const expiration_date = dateUtils(days);
+
+  const premium = await Premium.create({
     user_id,
-    pay_date: new Date(),
+    expiration_date,
   });
 
-  return newPremium;
+  //reflejar en User
+  user.premium = true;
+  await user.save();
+
+  return premium;
 };
