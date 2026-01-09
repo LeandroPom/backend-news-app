@@ -32,6 +32,9 @@ module.exports = async (user_id, product_id, amount) => {
       mp_status: "pending"
     };
 
+    // Vaciar pending_purchase
+    await user.update({ pending_purchase: [] });
+
     // 5️⃣ Guardar purchase en pending_purchase del usuario
     const updatedPendingPurchases = [
       ...user.pending_purchase,
