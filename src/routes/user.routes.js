@@ -1,3 +1,4 @@
+// routes/userRoutes.js
 const { Router } = require('express');
 const getAllUsers = require('../handlers/user/getAllUsersHandler');
 const getByIdUser = require('../handlers/user/handlerGetByIdUser');

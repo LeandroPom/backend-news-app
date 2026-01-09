@@ -1,3 +1,4 @@
+//models/User.js
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
@@ -41,8 +42,26 @@ module.exports = (sequelize) => {
     },
     profilePic: {
       type: DataTypes.STRING,
-      allowNull: true // URL de la imagen
+      allowNull: true
+    },
+
+    // 👇 NUEVAS PROPIEDADES
+    success_purchase: {
+      type: DataTypes.JSONB,
+      allowNull: false,
+      defaultValue: []
+    },
+    pending_purchase: {
+      type: DataTypes.JSONB,
+      allowNull: false,
+      defaultValue: []
+    },
+    failure_purchase: {
+      type: DataTypes.JSONB,
+      allowNull: false,
+      defaultValue: []
     }
+
   }, {
     timestamps: true,
     freezeTableName: true,

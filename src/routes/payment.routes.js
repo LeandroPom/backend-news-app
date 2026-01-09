@@ -1,3 +1,4 @@
+// routes/paymentRoutes.js
 const { Router } = require('express');
 const mpRouter = Router();
 const successPayment = require('../controllers/mercadoPago/successPayment');

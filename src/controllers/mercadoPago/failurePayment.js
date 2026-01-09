@@ -1,30 +1,25 @@
-const {  } = require('../../db');
+// controllers/mercadoPago/failurePayment.js
+require("dotenv").config();
+// const managerOutput = require("./managerOutput");
 
 module.exports = async (req, res) => {
   try {
+    // const { external_reference, payment_id, status, status_detail } = req.query;
 
-    const paymentData = req.query || req.body; // Datos recibidos de Mercado Pago
-  
-    if (!paymentData.payment_id || !paymentData.external_reference) {
-      console.error("⚠️ Advertencia: Datos de pago incompletos.");
-      return res.status(400).json({ error: "Datos de pago incompletos." });
-    }
-
-    // Guardar los datos en una variable temporal
-    const failurePaymentInfo = {
-      status: "failure",
-      payment_id: paymentData.payment_id,
-      external_reference: paymentData.external_reference,
-      status_detail: paymentData.status_detail,
-    };
-    
-    console.log("❌ Pago fallido:", failurePaymentInfo);
+    // await managerOutput(
+    //   external_reference,
+    //   payment_id || null,
+    //   {
+    //     status,
+    //     status_detail
+    //   },
+    //   "failure"
+    // );
 
     return res.redirect(302, `${process.env.FRONTEND_URL}/failure`);
-  
+
   } catch (error) {
-    console.error("❌ Error en failurePayment:", error);
-    res.status(500).json({ error: "Error interno al procesar el pago fallido." });
+    console.error("❌ failurePayment:", error);
+    return res.redirect(302, `${process.env.FRONTEND_URL}/failure`);
   }
 };
-  

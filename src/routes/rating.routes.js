@@ -1,3 +1,4 @@
+// routes/ratingRoutes.js
 const { Router } = require('express');
 const votePost = require('../handlers/rating/votePostHandler');
 const addView = require('../handlers/rating/addViewHandler');

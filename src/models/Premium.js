@@ -14,23 +14,18 @@ module.exports = (sequelize) => {
       user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        unique: true, // 🔒 1:1
+        unique: true,
       },
 
       expiration_date: {
         type: DataTypes.DATE,
-        allowNull: false, // siempre debe existir
+        allowNull: false,
       },
     },
     {
       timestamps: true,
       freezeTableName: true,
-      indexes: [
-        {
-          unique: true,
-          fields: ["user_id"],
-        },
-      ],
+      indexes: [{ unique: true, fields: ["user_id"] }],
     }
   );
 };

@@ -1,3 +1,4 @@
+// routes/premiumRoutes.js
 const { Router } = require("express");
 
 const createPremium = require("../handlers/premium/createPremiumHandler");

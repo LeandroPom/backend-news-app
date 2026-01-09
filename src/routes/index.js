@@ -9,6 +9,7 @@ const ratingRouter = require('./rating.routes');
 const bannerRouter = require('./banner.routes');
 const paymentRouter = require('./payment.routes');
 const premiumRouter = require('./premium.routes');
+const productRouter = require('./product.routes');
 
 
 
@@ -27,6 +28,7 @@ router.use('/ratings', ratingRouter);
 router.use('/banners', bannerRouter);
 router.use('/payments', paymentRouter);
 router.use('/premiums', premiumRouter);
+router.use('/products', productRouter);
 
 
 module.exports = router;
