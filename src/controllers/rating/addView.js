@@ -1,4 +1,4 @@
-// controllers/post/incrementView.js
+// controllers/rating/incrementView.js
 const { Post, PostView } = require("../../db");
 
 module.exports = async (post_id, user_id) => {

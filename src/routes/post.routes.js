@@ -1,3 +1,4 @@
+// routes/postRoutes.js
 const { Router } = require('express');
 
 const createPost = require('../handlers/post/createPostHandler');

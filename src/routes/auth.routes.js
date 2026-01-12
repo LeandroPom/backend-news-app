@@ -1,3 +1,4 @@
+// routes/authRoutes.js
 const { Router } = require('express');
 const handlerLogin = require('../controllers/auth/login');
 const handlerRegister = require('../controllers/auth/register');

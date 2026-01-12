@@ -1,4 +1,4 @@
-// handlers/post/votePostHandler.js
+// handlers/rating/votePostHandler.js
 const votePost = require("../../controllers/rating/votePost");
 
 module.exports = async (req, res) => {
@@ -11,6 +11,7 @@ module.exports = async (req, res) => {
       message: "Voto registrado correctamente",
       post: updatedPost,
     });
+    
   } catch (error) {
     console.error("❌ Error en votePostHandler:", error);
     return res.status(400).json({ error: error.message });

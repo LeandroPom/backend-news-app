@@ -1,3 +1,4 @@
+// routes/tagRoutes.js
 const { Router } = require('express');
 const CreateTag = require('../handlers/tag/createTagHandler');
 const GetAllTags = require('../handlers/tag/getAllTagsHandler');
