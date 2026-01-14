@@ -1,22 +1,32 @@
-//routes/product.routes.js
+// routes/product.routes.js
 const { Router } = require("express");
-const {
-    createProductHandler,
-    getAllProductsHandler,
-    getProductByIdHandler,
-    updateProductHandler,
-    deleteProductHandler,
-} = require("../handlers/product/handlers");
+
+// Handlers (uno por archivo)
+const createProductHandler = require("../handlers/product/createProductHandler");
+const getAllProductsHandler = require("../handlers/product/getAllProductsHandler");
+const getProductByIdHandler = require("../handlers/product/getProductByIdHandler");
+const updateProductHandler = require("../handlers/product/updateProductHandler");
+const deleteProductHandler = require("../handlers/product/deleteProductHandler");
 
 const productRouter = Router();
 
 /* =========================
    CRUD Routes
 ========================= */
-productRouter.post("/", createProductHandler);       // CREATE
-productRouter.get("/", getAllProductsHandler);        // READ ALL
-productRouter.get("/:id", getProductByIdHandler);     // READ ONE
-productRouter.put("/:id", updateProductHandler);      // UPDATE
-productRouter.delete("/:id", deleteProductHandler);   // DELETE
+
+// CREATE
+productRouter.post("/", createProductHandler);
+
+// READ ALL
+productRouter.get("/", getAllProductsHandler);
+
+// READ ONE
+productRouter.get("/:id", getProductByIdHandler);
+
+// UPDATE
+productRouter.put("/:id", updateProductHandler);
+
+// DELETE
+productRouter.delete("/:id", deleteProductHandler);
 
 module.exports = productRouter;
