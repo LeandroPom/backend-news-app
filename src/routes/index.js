@@ -10,6 +10,7 @@ const bannerRouter = require('./banner.routes');
 const paymentRouter = require('./payment.routes');
 const premiumRouter = require('./premium.routes');
 const productRouter = require('./product.routes');
+const orderRouter = require("./order.routes");
 
 
 
@@ -29,6 +30,7 @@ router.use('/banners', bannerRouter);
 router.use('/payments', paymentRouter);
 router.use('/premiums', premiumRouter);
 router.use('/products', productRouter);
+router.use("/orders", orderRouter);
 
 
 module.exports = router;

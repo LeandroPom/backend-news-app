@@ -1,5 +1,5 @@
 // controllers/product/updateProduct.js
-const { Product } = require("../../models");
+const { Product } = require("../../db");
 
 module.exports = async (product_id, data) => {
   if (!product_id || isNaN(product_id)) {

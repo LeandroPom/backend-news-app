@@ -1,55 +1,72 @@
 // controllers/mercadoPago/notificationPayment.js
-const { persistFromWebhook } = require("./managerOutput");
+
+const { MercadoPagoConfig, Payment: MP_Payment } = require("mercadopago");
+const { Purchase, Payment, Product, conn } = require("../../db");
+
+const client = new MercadoPagoConfig({
+  accessToken: process.env.MP_ACCESS_TOKEN
+});
 
 module.exports = async (req, res) => {
   try {
-    const data = req.body?.data || {};
-    const payment_id = data.id;
-    const external_reference = data.external_reference;
-    const mp_payment_status = data.status;
 
-    if (!external_reference || !mp_payment_status) {
+    const paymentId = req.body?.data?.id;
+
+    if (!paymentId)
       return res.status(200).json({ ignored: true });
-    }
 
-    // "userId|productName"
-    const [user_id, product_name] = external_reference.split("|");
+    // 🔐 VALIDACIÓN REAL
+    const mpPayment = await new MP_Payment(client).get({ id: paymentId });
 
-    let mp_status = "pending";
-    if (mp_payment_status === "approved") mp_status = "success";
-    if (mp_payment_status === "rejected") mp_status = "failure";
-    if (mp_payment_status === "cancelled") mp_status = "failure";
+    const purchase_id = mpPayment.external_reference;
 
-    const payment_info = {
-      aux: mp_status,
-      date_created: data.date_created,
-      date_approved: data.date_approved || null,
-      date_last_updated: data.date_last_updated || null,
-      installments: data.installments,
-      payer: data.payer || null,
-      payment_method_id: data.payment_method_id,
-      payment_type_id: data.payment_type_id,
-      product_name: product_name,
-      status: mp_payment_status,
-      status_detail: data.status_detail,
-      source: "webhook",
-      transaction_amount: data.transaction_amount,
-      user_id: user_id
-    };
+    const purchase = await Purchase.findByPk(purchase_id);
 
-    await persistFromWebhook(
-      payment_id,
-      payment_info
-    );
+    if (!purchase)
+      return res.status(200).json({ ignored: true });
 
+    // 🔐 Validar monto
+    if (Number(mpPayment.transaction_amount) !== Number(purchase.total_amount))
+      throw new Error("Monto inconsistente");
 
-    return res.status(200).json({ status: "ok" });
+    await conn.transaction(async (t) => {
+
+      await Payment.create({
+        purchase_id,
+        mp_payment_id: mpPayment.id,
+        mp_status: mpPayment.status,
+        transaction_amount: mpPayment.transaction_amount,
+        raw_response: mpPayment
+      }, { transaction: t });
+
+      if (mpPayment.status === "approved") {
+
+        purchase.status = "success";
+        await purchase.save({ transaction: t });
+
+      } else if (["rejected", "cancelled"].includes(mpPayment.status)) {
+
+        purchase.status = "failure";
+        await purchase.save({ transaction: t });
+
+        // 🔁 devolver stock
+        const items = await purchase.getPurchaseItems({ transaction: t });
+
+        for (const item of items) {
+          const product = await Product.findByPk(item.product_id, { transaction: t });
+
+          if (!product.is_unlimited) {
+            product.product_amount += item.quantity;
+            await product.save({ transaction: t });
+          }
+        }
+      }
+    });
+
+    return res.status(200).json({ ok: true });
 
   } catch (error) {
-    console.error("❌ notificationPayment:", error.message);
-    return res.status(200).json({
-      status: "error",
-      message: error.message
-    });
+    console.error("Webhook error:", error);
+    return res.status(200).json({ error: true });
   }
 };

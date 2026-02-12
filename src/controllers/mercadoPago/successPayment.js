@@ -1,21 +1,11 @@
 // controllers/mercadoPago/successPayment.js
 require("dotenv").config();
-// const managerOutput = require("./managerOutput");
+
 
 module.exports = async (req, res) => {
   try {
-    // const { external_reference, payment_id, status, payment_type } = req.query;
 
-    // await managerOutput(
-    //   external_reference,
-    //   payment_id,
-    //   {
-    //     status,
-    //     payment_type
-    //   },
-    //   "success"
-    // );
-
+    console.log( 'redirect from: success')
     return res.redirect(302, `${process.env.FRONTEND_URL}/success`);
 
   } catch (error) {

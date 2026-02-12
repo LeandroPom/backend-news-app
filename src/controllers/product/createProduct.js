@@ -1,5 +1,5 @@
 // controllers/product/createProduct.js
-const { Product } = require("../../models");
+const { Product } = require("../../db");
 
 module.exports = async ({ product_name, product_price }) => {
   // Validaciones

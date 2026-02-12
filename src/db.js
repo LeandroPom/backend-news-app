@@ -43,7 +43,7 @@ fs.readdirSync(path.join(__dirname, '/models'))
 modelDefiners.forEach(model => model(sequelize));
 // Itera sobre todos los modelos cargados y los define en la instancia de sequelize
 
-const { User, Post, Tag, PostMedia, PostVote, PostView, Banner, Premium, Favorite } = sequelize.models;
+const { User, Post, Tag, PostMedia, PostVote, PostView, Banner, Premium, Favorite, Purchase, PurchaseItem, Payment, Product} = sequelize.models;
 
 /* =========================================================
    RELACIONES PRINCIPALES
@@ -130,6 +130,35 @@ Premium.belongsTo(User, {
     foreignKey: "user_id",
     as: "User",
 });
+
+/* =========================================================
+   USER ↔ PURCHASE (1:N)
+   ========================================================= */
+
+User.hasMany(Purchase, { foreignKey: "user_id" });
+Purchase.belongsTo(User, { foreignKey: "user_id" });
+
+/* =========================================================
+   PURCHASE ↔ PURCHASE ITEM (1:N)
+   ========================================================= */
+
+Purchase.hasMany(PurchaseItem, { foreignKey: "purchase_id" });
+PurchaseItem.belongsTo(Purchase, { foreignKey: "purchase_id" });
+
+/* =========================================================
+   PRODUCT ↔ PURCHASE ITEM (1:N)
+   ========================================================= */
+
+Product.hasMany(PurchaseItem, { foreignKey: "product_id" });
+PurchaseItem.belongsTo(Product, { foreignKey: "product_id" });
+
+/* =========================================================
+   PURCHASE ↔ PAYMENT (1:N)
+   ========================================================= */
+
+Purchase.hasMany(Payment, { foreignKey: "purchase_id" });
+Payment.belongsTo(Purchase, { foreignKey: "purchase_id" });
+
 
 module.exports = {
   ...sequelize.models, // Exporta todos los modelos creados en Sequelize

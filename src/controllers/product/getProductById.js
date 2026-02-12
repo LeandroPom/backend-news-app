@@ -1,5 +1,5 @@
 // controllers/product/getProductById.js
-const { Product } = require("../../models");
+const { Product } = require("../../db");
 
 module.exports = async (product_id) => {
   if (!product_id || isNaN(product_id)) {

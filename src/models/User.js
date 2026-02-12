@@ -45,22 +45,22 @@ module.exports = (sequelize) => {
       allowNull: true
     },
 
-    // 👇 NUEVAS PROPIEDADES
-    success_purchase: {
-      type: DataTypes.JSONB,
-      allowNull: false,
-      defaultValue: []
-    },
-    pending_purchase: {
-      type: DataTypes.JSONB,
-      allowNull: false,
-      defaultValue: []
-    },
-    failure_purchase: {
-      type: DataTypes.JSONB,
-      allowNull: false,
-      defaultValue: []
-    }
+    // // 👇 NUEVAS PROPIEDADES
+    // success_purchase: {
+    //   type: DataTypes.JSONB,
+    //   allowNull: false,
+    //   defaultValue: []
+    // },
+    // pending_purchase: {
+    //   type: DataTypes.JSONB,
+    //   allowNull: false,
+    //   defaultValue: []
+    // },
+    // failure_purchase: {
+    //   type: DataTypes.JSONB,
+    //   allowNull: false,
+    //   defaultValue: []
+    // }
 
   }, {
     timestamps: true,
