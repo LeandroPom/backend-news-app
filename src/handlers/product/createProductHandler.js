@@ -7,6 +7,7 @@ module.exports = async (req, res) => {
 
     return res.status(201).json({
       status: "success",
+      message: "Producto creado correctamente",
       data: product,
     });
   } catch (error) {

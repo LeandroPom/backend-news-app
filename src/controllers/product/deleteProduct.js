@@ -14,8 +14,5 @@ module.exports = async (product_id) => {
 
   await product.destroy();
 
-  return {
-    message: "Producto eliminado correctamente",
-    product_id,
-  };
+  return product;
 };
