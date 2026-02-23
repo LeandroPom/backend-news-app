@@ -1,5 +1,5 @@
 // services/premiumService.js
-const { Premium } = require("../db");
+const { Premium, User } = require("../db");
 
 /**
  * 🔹 Normaliza fecha a 23:59:59.999
@@ -39,24 +39,30 @@ async function applyPremium({ user_id, days, purchase_id, transaction }) {
       applied_purchase_id: purchase_id
     }, { transaction });
 
-    return;
-  }
-
-  if (premium.expiration_date < now) {
-
-    const expiration = endOfDay(now);
-    expiration.setDate(expiration.getDate() + days);
-    premium.expiration_date = expiration;
-
   } else {
 
-    const expiration = new Date(premium.expiration_date);
-    expiration.setDate(expiration.getDate() + days);
-    premium.expiration_date = endOfDay(expiration);
+    if (premium.expiration_date < now) {
+
+      const expiration = endOfDay(now);
+      expiration.setDate(expiration.getDate() + days);
+      premium.expiration_date = expiration;
+
+    } else {
+
+      const expiration = new Date(premium.expiration_date);
+      expiration.setDate(expiration.getDate() + days);
+      premium.expiration_date = endOfDay(expiration);
+    }
+
+    premium.applied_purchase_id = purchase_id;
+    await premium.save({ transaction });
   }
 
-  premium.applied_purchase_id = purchase_id;
-  await premium.save({ transaction });
+  // 🔥 ACTIVAR FLAG EN USER
+  await User.update(
+    { premium: true },
+    { where: { user_id }, transaction }
+  );
 }
 
 /**
@@ -75,6 +81,12 @@ async function revokePremium({ user_id, purchase_id, transaction }) {
   if (premium.applied_purchase_id !== purchase_id) return;
 
   await premium.destroy({ transaction });
+
+  // 🔥 DESACTIVAR FLAG EN USER
+  await User.update(
+    { premium: false },
+    { where: { user_id }, transaction }
+  );
 }
 
 module.exports = {
