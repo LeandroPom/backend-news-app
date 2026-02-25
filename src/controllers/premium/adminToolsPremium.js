@@ -25,6 +25,21 @@ async function validateAdmin(admin_user_id, transaction) {
 }
 
 /**
+ * 🔄 Sincroniza flag premium en User
+ */
+async function syncUserPremiumFlag(user, premium, transaction) {
+  const now = new Date();
+
+  const isActive =
+    premium &&
+    premium.expiration_date > now &&
+    premium.is_banned === false;
+
+  user.premium = isActive;
+  await user.save({ transaction });
+}
+
+/**
  * 👑 ADMIN TOOL
  * Otorga Premium manualmente
  */
@@ -57,7 +72,6 @@ async function grantPremiumManual({
     const now = new Date();
 
     if (!premium) {
-      // 🆕 Crear nuevo premium
       const expiration = endOfDay(now);
       expiration.setDate(expiration.getDate() + amount);
 
@@ -70,7 +84,6 @@ async function grantPremiumManual({
 
     } else {
 
-      // Si está vencido → reinicia desde hoy
       if (premium.expiration_date < now) {
 
         const newExpiration = endOfDay(now);
@@ -78,7 +91,6 @@ async function grantPremiumManual({
         premium.expiration_date = newExpiration;
 
       } else {
-        // Si está activo → acumula días
         const newExpiration = new Date(premium.expiration_date);
         newExpiration.setDate(newExpiration.getDate() + amount);
         premium.expiration_date = endOfDay(newExpiration);
@@ -87,9 +99,8 @@ async function grantPremiumManual({
       await premium.save({ transaction });
     }
 
-    // 🔄 Sincronizar flag en User
-    user.premium = true;
-    await user.save({ transaction });
+    // 🔥 SINCRONIZACIÓN REAL
+    await syncUserPremiumFlag(user, premium, transaction);
 
     return premium;
   });
@@ -108,6 +119,12 @@ async function togglePremiumBan({
 
     await validateAdmin(admin_user_id, transaction);
 
+    const user = await User.findByPk(target_user_id, { transaction });
+
+    if (!user) {
+      throw new Error("Usuario objetivo no encontrado");
+    }
+
     const premium = await Premium.findOne({
       where: { user_id: target_user_id },
       transaction,
@@ -120,6 +137,9 @@ async function togglePremiumBan({
 
     premium.is_banned = !premium.is_banned;
     await premium.save({ transaction });
+
+    // 🔥 SINCRONIZACIÓN REAL
+    await syncUserPremiumFlag(user, premium, transaction);
 
     return premium;
   });
